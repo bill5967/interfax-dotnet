@@ -96,6 +96,13 @@ namespace InterFAX.Api
         {
             return await SendFax(new List<IFaxDocument> {faxDocument}, options);
         }
+        //Bypass the conversion from the FaxDocument to a Byte[] if the input is a Byte[]
+        public async Task<int> SendFax(Byte[] faxData, SendOptions options)
+        {
+            var response = await _interfax.HttpClient.PostAsync(ResourceUri, options, faxData);
+            return Convert.ToInt32(response.Headers.Location.Segments.Last());
+        }
+
         #endregion
 
         #region Modify Existing Faxes
